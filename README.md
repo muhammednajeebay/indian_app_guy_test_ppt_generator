@@ -1,269 +1,75 @@
-# indian_app_guy_test_ppt_generator
+# MagicSlides PPT Generator
 
-A new Flutter project.
-# Flutter Assignment
+A Flutter application that allows users to generate PowerPoint presentations from topics using the MagicSlides API. The app includes authentication, presentation customization, and PDF preview/download capabilities.
 
-Welcome!
+## 🚀 How to Run
 
-Your task is to build a simple Flutter app that uses **MagicSlides Topic → PPT API** to generate presentations from a topic.
+### Prerequisites
+- Flutter SDK installed
+- Android Studio or VS Code configured
+- Connected Android device or Emulator
 
----
+### Installation & Execution
+1.  **Clone the repository**:
+    ```bash
+    git clone <repository-url>
+    cd indian_app_guy_test_ppt_generator
+    ```
 
-# 📌 **What You Need to Build**
+2.  **Install dependencies**:
+    ```bash
+    flutter pub get
+    ```
 
-## **1. Authentication (Signup + Login)**
+3.  **Run the application**:
+    ```bash
+    flutter run
+    ```
 
-- Create **Signup** and **Login** screens.
-- User registers using:
-    - Email
-    - Password
-- Save users in **Supabase OR MongoDB** (choose any).
-- After login, the user should stay logged in (persistent session).
-- After successful login → redirect to **Home Screen**.
+4.  **Build Release APK**:
+    ```bash
+    flutter build apk --release
+    ```
 
----
+## 🗄️ Database Used
 
-## **2. Home Screen**
+This project uses **Supabase** as the primary backend database.
 
-This should contain:
+*   **Authentication**: Supabase Auth handles user registration, login, and session management.
+*   **User Data**: User profiles and metadata are stored in Supabase tables.
+*   **Local Storage**: `flutter_secure_storage` and `shared_preferences` are used for persisting session tokens and local app preferences.
 
-### ✅ **Topic Input**
+## 🏗️ Architecture
 
-- A simple text field:
-    - "Enter your topic…"
+The application follows **Clean Architecture** principles to ensure separation of concerns, testability, and scalability. It utilizes the **BLoC (Business Logic Component)** pattern for state management.
 
-### ✅ **Two Options**
+### Layers
+1.  **Presentation Layer** (`lib/presentation/`):
+    *   Contains UI components (Screens, Widgets).
+    *   Manages State using **BLoCs** (AuthBloc, PresentationBloc).
+    *   Handles user events and renders states.
 
-- **Default Template**
-- **Editable Template**
+2.  **Domain Layer** (`lib/domain/`):
+    *   The core business logic.
+    *   Contains **Entities** (Immutable business objects).
+    *   Defines **Repository Interfaces** (Contracts for data operations).
+    *   Independent of external libraries and implementation details.
 
-User selects one.
+3.  **Data Layer** (`lib/data/`):
+    *   Handles data retrieval and storage.
+    *   **Models**: DTOs (Data Transfer Objects) that parse JSON.
+    *   **Repositories**: Implement domain interfaces and coordinate data sources.
+    *   **Data Sources**: Interact with external APIs (MagicSlides), Supabase, and local storage.
 
-✅ **Third Options**
-
-### Suggested fields:
-
-- Slide Count (1–50)
-- Language (default: `en`)
-- Template dropdown (from template list below)
-- AI Images: ON/OFF
-- Image on each slide: ON/OFF
-- Google Images: ON/OFF
-- Google Text: ON/OFF
-- Model: `gpt-4` or `gpt-3.5`
-- Presentation For (student, teacher, business, etc.)
-- Optional Watermark fields:
-    - width
-    - height
-    - brandURL
-    - position
-
-Keep this simple. No need for perfect UI.
-
-### ✅ **Generate Button**
-
-After choosing settings → user clicks generate and you will show them results
-
----
-
----
-
-## **4. API Integration**
-
-Use this endpoint:
-
+### Data Flow
 ```
-POST https://api.magicslides.app/public/api/ppt_from_topic
+User Input -> BLoC -> Repository impl -> Remote/Local DataSource -> API/DB
+UI <- State <- BLoC <- Entity <- Repository Interface <- Model
 ```
 
-### **Required Body Fields**
+## ⚠️ Known Issues
 
-```json
-{
-  "topic": "Your topic",
-  "email": "your-email@example.com",
-  "accessId": "YOUR_HARDCODED_ACCESS_ID",
-  "template": "bullet-point1"
-}
-```
-
-You will get a **hardcoded accessId** from us.
-
-⚠️ Do NOT add signup/login for the MagicSlides API.
-
-Use only our provided accessId.
-
----
-
-## **5. Show Output**
-
-After API call:
-
-### ✔ Show a PDF preview of the generated presentation
-
-Use **any PDF viewer plugin**.
-
-### ✔ Show "Download" button
-
-User can download the PPT/PDF file to phone storage.
-
-### ✔ Handle errors
-
-Show clean messages if:
-
-- Topic is empty
-- API fails
-- No internet
-
----
-
----
-
-# ⭐ **Extra Points (Optional)**
-
-- Add a dark/light mode toggle.
-- Add animations using `AnimatedContainer` or Lottie.
-- Add logout button.
-- Add Google Slides icon or a small MagicSlides-style header.
-
----
-
-# 📦 **Final Submission**
-
-Please submit:
-
-- ✔ GitHub Repository Link
-- ✔ APK (Android)
-- ✔ Short README with:
-    - How to run
-    - Database used
-    - Architecture
-    - Known issues
-
-A Video demo
-
----
-
-# 🧪 **Evaluation Criteria**
-
-| Criteria | Weight |
-| --- | --- |
-| Signup/Login + Database | 20% |
-| API Integration | 25% |
-| PDF Preview + Download | 20% |
-| Clean Code + Structure | 20% |
-| UI/UX | 15% |
-
----
-
-# 🧠 **MagicSlides API — Topic to PPT (Full Reference)**
-
-### **Endpoint**
-
-```
-POST https://api.magicslides.app/public/api/ppt_from_topic
-```
-
----
-
-## **Request Parameters**
-
-| Field | Type | Required | Notes |
-| --- | --- | --- | --- |
-| topic | string | Yes | Topic for PPT |
-| extraInfoSource | string | No | Additional context |
-| email | string | Yes | Your registered email |
-| accessId | string | Yes | Hardcoded |
-| template | string | No | Default: bullet-point1 |
-| language | string | No | Default: en |
-| slideCount | number | No | 1–50, default: 10 |
-| aiImages | boolean | No | Default: false |
-| imageForEachSlide | boolean | No | Default: true |
-| googleImage | boolean | No | Default: false |
-| googleText | boolean | No | Default: false |
-| model | string | No | gpt-4 / gpt-3.5 |
-| presentationFor | string | No | Audience |
-| watermark | object | No | Optional image watermark |
-
----
-
-## **Supported Templates**
-
-### **Editable**
-
-- ed-bullet-point9
-- ed-bullet-point7
-- ed-bullet-point6
-- ed-bullet-point5
-- ed-bullet-point2
-- ed-bullet-point4
-- custom gold 1
-- custom Dark 1
-- custom sync 1–6
-- custom-ed-7 to custom-ed-12
-- pitchdeckorignal
-- pitch-deck-2
-- pitch-deck-3
-- ed-bullet-point1
-
-### **Default**
-
-- bullet-point1
-- bullet-point2
-- bullet-point4
-- bullet-point5
-- bullet-point6
-- bullet-point7
-- bullet-point8
-- bullet-point9
-- bullet-point10
-- custom2–custom9
-- verticalBulletPoint1
-- verticalCustom1
-
----
-
-## **Example Request**
-
-```json
-{
-  "topic": "Artificial Intelligence in Healthcare",
-  "extraInfoSource": "Focus on recent developments",
-  "email": "your-email@example.com",
-  "accessId": "your-access-id",
-  "template": "bullet-point1",
-  "language": "en",
-  "slideCount": 10,
-  "aiImages": false,
-  "imageForEachSlide": true,
-  "googleImage": false,
-  "googleText": false,
-  "model": "gpt-4",
-  "presentationFor": "healthcare professionals",
-  "watermark": {
-    "width": "48",
-    "height": "48",
-    "brandURL": "https://example.com/logo.png",
-    "position": "BottomRight"
-  }
-}
-```
-
----
-
-## **Example Response**
-
-```json
-{
-  "success": true,
-  "data": {
-    "url": "https://example.com/generated.pptx"
-  },
-  "message": "Presentation generated successfully"
-}
-```
-
----
-
-Check this for reference - 
-API Docs -  [https://www.magicslides.app/docs-api](https://www.magicslides.app/docs-api/topic)
+*   **PDF Preview**: The in-app PDF previewer (`flutter_pdfview`) may encounter rendering issues on certain device models or emulators.
+*   **Performance**: Generating large presentations with high slide counts or AI images may take significant time depending on network speed and API processing.
+*   **Templates**: Some requested template configurations might not be fully supported by the underlying API endpoint, defaulting to standard layouts.
+*   **Internet Dependency**: The core functionality requires an active internet connection; offline mode is currently limited.

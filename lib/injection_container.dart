@@ -14,6 +14,12 @@ import 'domain/usecases/login_usecase.dart';
 import 'domain/usecases/signup_usecase.dart';
 import 'presentation/blocs/auth/auth_bloc.dart';
 import 'presentation/blocs/theme/theme_bloc.dart';
+import 'presentation/blocs/presentation/presentation_bloc.dart';
+import 'presentation/blocs/presentation_form/presentation_form_cubit.dart';
+import 'data/datasources/presentation_remote_datasource.dart';
+import 'data/repositories/presentation_repository_impl.dart';
+import 'domain/repositories/presentation_repository.dart';
+import 'domain/usecases/generate_presentation_usecase.dart';
 
 final getit = GetIt.instance;
 
@@ -29,18 +35,34 @@ Future<void> init() async {
   );
   getit.registerFactory(() => ThemeBloc());
 
+  // Presentation Bloc
+  getit.registerFactory(
+    () => PresentationBloc(generatePresentationUseCase: getit()),
+  );
+  getit.registerFactory(() => PresentationFormCubit());
+
   // Use cases
   getit.registerLazySingleton(() => LoginUseCase(getit()));
   getit.registerLazySingleton(() => SignupUseCase(getit()));
+  getit.registerLazySingleton(() => GeneratePresentationUseCase(getit()));
 
   // Repository
   getit.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(remoteDataSource: getit(), networkInfo: getit()),
   );
+  getit.registerLazySingleton<PresentationRepository>(
+    () => PresentationRepositoryImpl(
+      remoteDataSource: getit(),
+      networkInfo: getit(),
+    ),
+  );
 
   // Data sources
   getit.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(supabaseClient: getit()),
+  );
+  getit.registerLazySingleton<PresentationRemoteDataSource>(
+    () => PresentationRemoteDataSourceImpl(apiClient: getit()),
   );
 
   //! Core
