@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'custom_loading_indicator.dart';
 
 class LoadingOverlay extends StatelessWidget {
   final bool isLoading;
@@ -24,7 +25,7 @@ class LoadingOverlay extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const CircularProgressIndicator(),
+                  const CustomLoadingIndicator(width: 100, height: 100),
                   const SizedBox(height: 16),
                   Text(
                     message,

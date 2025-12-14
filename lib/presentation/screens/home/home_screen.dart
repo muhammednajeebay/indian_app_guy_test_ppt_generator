@@ -15,6 +15,7 @@ import '../../widgets/loading_overlay.dart';
 import '../result/result_screen.dart';
 import '../../blocs/presentation_form/presentation_form_cubit.dart';
 import '../../blocs/presentation_form/presentation_form_state.dart';
+import '../../widgets/error_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -103,9 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
         } else if (state is PresentationError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
-          );
+          ErrorDialog.show(context, message: state.message);
         }
       },
       builder: (context, state) {

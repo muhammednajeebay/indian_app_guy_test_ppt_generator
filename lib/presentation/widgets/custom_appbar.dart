@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:indian_app_guy_test_ppt_generator/core/constants/app_constants.dart';
-import 'package:indian_app_guy_test_ppt_generator/core/utils/logout_alert.dart';
+import 'package:indian_app_guy_test_ppt_generator/presentation/widgets/logout_alert.dart';
 import 'package:indian_app_guy_test_ppt_generator/presentation/blocs/theme/theme_bloc.dart';
 import 'package:indian_app_guy_test_ppt_generator/presentation/blocs/theme/theme_event.dart';
 import 'package:indian_app_guy_test_ppt_generator/presentation/blocs/theme/theme_state.dart';
