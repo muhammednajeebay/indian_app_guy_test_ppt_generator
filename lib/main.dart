@@ -12,8 +12,11 @@ import 'presentation/blocs/theme/theme_state.dart';
 import 'presentation/blocs/presentation/presentation_bloc.dart';
 import 'presentation/blocs/presentation_form/presentation_form_cubit.dart';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   await di.init();
   runApp(const MyApp());
 }
