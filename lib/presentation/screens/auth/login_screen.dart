@@ -9,6 +9,7 @@ import 'signup_screen.dart';
 import '../home/home_screen.dart';
 import '../../../core/utils/validators.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/utils/permissions.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -79,12 +80,14 @@ class _LoginScreenState extends State<LoginScreen>
 
     return Scaffold(
       body: BlocConsumer<AuthBloc, AuthState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is AuthError) {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(state.message)));
           } else if (state is AuthAuthenticated) {
+            await AppPermissions.ensureRequiredPermissions();
+            if (!mounted) return;
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => const HomeScreen()),
             );

@@ -6,7 +6,7 @@ class ThemeState extends Equatable {
 
   const ThemeState({required this.themeMode});
 
-  factory ThemeState.initial() => const ThemeState(themeMode: ThemeMode.system);
+  factory ThemeState.initial() => const ThemeState(themeMode: ThemeMode.light);
 
   @override
   List<Object> get props => [themeMode];
