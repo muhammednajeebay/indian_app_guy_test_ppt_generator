@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:indian_app_guy_test_ppt_generator/presentation/blocs/auth/auth_bloc.dart';
-import 'package:indian_app_guy_test_ppt_generator/presentation/blocs/auth/auth_event.dart';
-import 'package:indian_app_guy_test_ppt_generator/presentation/screens/auth/login_screen.dart';
+import 'package:magicslides_ppt_assist/presentation/blocs/auth/auth_bloc.dart';
+import 'package:magicslides_ppt_assist/presentation/blocs/auth/auth_event.dart';
+import 'package:magicslides_ppt_assist/presentation/screens/auth/login_screen.dart';
 
 Future<dynamic> fnShowLogoutAlertDialogue(BuildContext context) {
   return showDialog(

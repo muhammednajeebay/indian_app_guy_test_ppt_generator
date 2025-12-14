@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:indian_app_guy_test_ppt_generator/presentation/widgets/custom_appbar.dart';
+import 'package:magicslides_ppt_assist/presentation/widgets/custom_appbar.dart';
 import '../../../core/constants/api_constants.dart';
 import '../../blocs/presentation/presentation_bloc.dart';
 import '../../blocs/presentation/presentation_event.dart';

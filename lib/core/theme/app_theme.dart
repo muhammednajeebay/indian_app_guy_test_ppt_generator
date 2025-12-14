@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:indian_app_guy_test_ppt_generator/core/constants/app_colors.dart';
+import 'package:magicslides_ppt_assist/core/constants/app_colors.dart';
 
 class AppTheme {
   static ThemeData lightTheme = ThemeData(

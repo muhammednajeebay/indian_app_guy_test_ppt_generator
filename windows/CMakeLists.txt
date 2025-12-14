@@ -1,10 +1,10 @@
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
-project(indian_app_guy_test_ppt_generator LANGUAGES CXX)
+project(magicslides_ppt_assist LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
-set(BINARY_NAME "indian_app_guy_test_ppt_generator")
+set(BINARY_NAME "magicslides_ppt_assist")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.

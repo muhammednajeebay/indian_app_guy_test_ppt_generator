@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:indian_app_guy_test_ppt_generator/core/constants/app_constants.dart';
+import 'package:magicslides_ppt_assist/core/constants/app_constants.dart';
 import 'injection_container.dart' as di;
 import 'presentation/blocs/auth/auth_bloc.dart';
 import 'presentation/blocs/auth/auth_event.dart';

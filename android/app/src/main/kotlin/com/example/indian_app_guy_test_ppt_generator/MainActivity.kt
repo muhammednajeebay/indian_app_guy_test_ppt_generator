@@ -1,4 +1,4 @@
-package com.example.indian_app_guy_test_ppt_generator
+package com.example.magicslides_ppt_assist
 
 import io.flutter.embedding.android.FlutterActivity
 

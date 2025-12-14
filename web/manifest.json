@@ -1,6 +1,6 @@
 {
-    "name": "indian_app_guy_test_ppt_generator",
-    "short_name": "indian_app_guy_test_ppt_generator",
+    "name": "magicslides_ppt_assist",
+    "short_name": "magicslides_ppt_assist",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
