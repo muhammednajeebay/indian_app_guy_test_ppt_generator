@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
-
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
+
 import '../../../domain/entities/presentation.dart';
 import '../../../core/utils/logger.dart';
 import '../../widgets/custom_loading_indicator.dart';
-
-import '../../widgets/custom_error_widget.dart';
 import '../../widgets/error_dialog.dart';
+import '../../widgets/custom_button.dart';
+import 'presentation_viewer_screen.dart';
 
 class ResultScreen extends StatefulWidget {
   final Presentation presentation;
@@ -23,48 +21,18 @@ class ResultScreen extends StatefulWidget {
 }
 
 class _ResultScreenState extends State<ResultScreen> {
-  String? localPath;
-  bool isLoading = true;
-  String errorMessage = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadPdf();
-  }
-
-  Future<void> _loadPdf() async {
-    try {
-      final url = widget.presentation.url;
-      final filename = url.substring(url.lastIndexOf("/") + 1);
-      final request = await http.get(Uri.parse(url));
-      final bytes = request.bodyBytes;
-      final dir = await getApplicationDocumentsDirectory();
-      final file = File('${dir.path}/$filename');
-
-      await file.writeAsBytes(bytes, flush: true);
-      setState(() {
-        localPath = file.path;
-        isLoading = false;
-      });
-    } catch (e) {
-      redPrint('Error loading PDF: $e');
-      setState(() {
-        errorMessage = 'Failed to load PDF: $e';
-        isLoading = false;
-      });
-    }
-  }
+  bool isDownloading = false;
 
   Future<void> _downloadPdf() async {
     setState(() {
-      isLoading = true;
+      isDownloading = true;
     });
 
     try {
-      final url = widget.presentation.url; // Assuming this is valid
+      final url = widget.presentation.url;
+      final extension = url.split('.').last;
       final filename =
-          "Presentation_${DateTime.now().millisecondsSinceEpoch}.pdf";
+          "Presentation_${DateTime.now().millisecondsSinceEpoch}.$extension";
 
       Directory? directory;
       if (Platform.isAndroid) {
@@ -80,10 +48,7 @@ class _ResultScreenState extends State<ResultScreen> {
             directory = await getExternalStorageDirectory();
           }
         } else {
-          // Fallback for Android 13+ regarding images/video vs generic files,
-          // or just deny. For simplicty in this scope, if storage denied,
-          // try externalStorageDirectory which acts as app-specific storage
-          // often not needing as strict permissions on newer androids for own app dir
+          // Fallback for Android 13+
           directory = await getExternalStorageDirectory();
         }
       } else {
@@ -93,7 +58,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
       if (directory != null) {
         final savePath = "${directory.path}/$filename";
-        // Use Dio for download to get progress if needed, simple get for now
+        // Use Dio for download
         final dio = Dio();
         await dio.download(url, savePath);
 
@@ -116,40 +81,73 @@ class _ResultScreenState extends State<ResultScreen> {
     } finally {
       if (mounted) {
         setState(() {
-          isLoading = false;
+          isDownloading = false;
         });
       }
     }
   }
 
+  void _navigateToViewer() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) =>
+            PresentationViewerScreen(presentation: widget.presentation),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.presentation.title),
-        actions: [
-          IconButton(icon: const Icon(Icons.download), onPressed: _downloadPdf),
-        ],
-      ),
+      appBar: AppBar(title: const Text('Presentation Ready')),
       body: Stack(
         children: [
-          if (localPath != null)
-            PDFView(
-              filePath: localPath,
-              enableSwipe: true,
-              swipeHorizontal: true,
-              autoSpacing: false,
-              pageFling: false,
-              onError: (error) {
-                redPrint(error.toString());
-              },
-              onPageError: (page, error) {
-                redPrint('$page: ${error.toString()}');
-              },
+          Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Icon(
+                  Icons.check_circle_outline,
+                  size: 100,
+                  color: Colors.green,
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  widget.presentation.title,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Your presentation has been generated successfully!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.grey),
+                ),
+                const SizedBox(height: 48),
+
+                CustomButton(
+                  text: 'View Presentation',
+                  icon: Icons.visibility,
+                  onPressed: _navigateToViewer,
+                ),
+                const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  onPressed: isDownloading ? null : _downloadPdf,
+                  icon: const Icon(Icons.download),
+                  label: const Text('Download File'),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                ),
+              ],
             ),
-          if (isLoading) const Center(child: CustomLoadingIndicator()),
-          if (errorMessage.isNotEmpty)
-            Center(child: CustomErrorWidget(message: errorMessage)),
+          ),
+          if (isDownloading) const Center(child: CustomLoadingIndicator()),
         ],
       ),
     );
